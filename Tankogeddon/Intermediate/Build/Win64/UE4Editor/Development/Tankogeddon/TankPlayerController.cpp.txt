@@ -1,0 +1,6 @@
+D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\Definitions.Tankogeddon.h
+D:\UE4 Projects\TankProject\Tankogeddon\Source\Tankogeddon\TankPawn.h
+D:\UE4 Projects\TankProject\Tankogeddon\Source\Tankogeddon\TankPlayerController.h
+D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\TankPlayerController.generated.h
+D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\TankPawn.generated.h
+D:\UnrealEngine\UE_4.27\Engine\Source\Runtime\Engine\Public\DrawDebugHelpers.h

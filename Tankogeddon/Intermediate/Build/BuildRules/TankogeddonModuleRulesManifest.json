@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"D:\\UE4 Projects\\TankProject\\Tankogeddon\\Source\\Tankogeddon\\Tankogeddon.Build.cs",
+		"D:\\UE4 Projects\\TankProject\\Tankogeddon\\Source\\Tankogeddon.Target.cs",
+		"D:\\UE4 Projects\\TankProject\\Tankogeddon\\Source\\TankogeddonEditor.Target.cs"
+	],
+	"EngineVersion": "4.27.2"
+}
