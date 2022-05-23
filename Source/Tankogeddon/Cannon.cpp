@@ -119,8 +119,9 @@ void ACannon::OnReload()
 	// If inventory is not empty - we reload the cannon.
 	if (ammoPool >= 5)
 	{
+		ammoPool = ammoPool - (5 - loadedAmmo);
 		loadedAmmo = 5;
-		ammoPool -= 5;
+		
 	}
 }
 
