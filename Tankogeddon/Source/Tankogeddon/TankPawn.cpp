@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//*\\|*|-PSAIX-|*|//*\\
 
 #include "TankPawn.h"
 #include "Components/StaticMeshComponent.h"
@@ -6,15 +6,11 @@
 #include "Camera/CameraComponent.h"
 #include "TankPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
-
-//DECLARE_LOG_CATEGORY_EXTERN(TankLog, All, All);
-//DEFINE_LOG_CATEGORY(TankLog);
+#include "Components/ArrowComponent.h"
 
 
-// Sets default values
 ATankPawn::ATankPawn()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank body"));
@@ -22,6 +18,9 @@ ATankPawn::ATankPawn()
 
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank turret"));
 	TurretMesh->SetupAttachment(BodyMesh);
+
+	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
+	CannonSetupPoint->AttachToComponent(TurretMesh,FAttachmentTransformRules::KeepRelativeTransform);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArm->SetupAttachment(BodyMesh);
@@ -34,16 +33,15 @@ ATankPawn::ATankPawn()
 
 }
 
-// Called when the game starts or when spawned
 void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
-	
+
+	SetupCannon();
 }
 
 
-// Called every frame
 void ATankPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -75,7 +73,6 @@ void ATankPawn::Tick(float DeltaTime)
 	}
 }
 
-// Called to bind functionality to input
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -90,4 +87,50 @@ void ATankPawn::MoveForward(float AxisValue)
 void ATankPawn::RotateRight(float AxisValue)
 {
 	TargetRightAxisValue = AxisValue;
+}
+
+void ATankPawn::SetupCannon()
+{
+	if (Cannon)
+	{
+		Cannon->Destroy();
+	}
+	FActorSpawnParameters params;
+	params.Instigator = this;
+	params.Owner = this;
+	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, params);
+	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+}
+
+
+void ATankPawn::Fire()
+{
+	if (Cannon)
+	{
+		Cannon->Fire();
+	}
+}
+
+void ATankPawn::FireSpecial()
+{
+	if (Cannon)
+	{
+		Cannon->FireSpecial();
+	}
+}
+
+void ATankPawn::OnReload()
+{
+	if (Cannon)
+	{
+		Cannon->OnReload();
+	}
+}
+
+void ATankPawn::StopFire()
+{
+	if (Cannon)
+	{
+		Cannon->StopFire();
+	}
 }

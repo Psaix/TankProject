@@ -2,6 +2,14 @@ D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Devel
 D:\UnrealEngine\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
 D:\UnrealEngine\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
 D:\UE4 Projects\TankProject\Tankogeddon\Source\Tankogeddon/TankPawn.h
+D:\UE4 Projects\TankProject\Tankogeddon\Source\Tankogeddon\Cannon.h
+D:\UE4 Projects\TankProject\Tankogeddon\Source\Tankogeddon\GameStructs.h
+D:\UnrealEngine\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/UserDefinedStruct.h
+D:\UnrealEngine\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\UserDefinedStruct.generated.h
+D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\GameStructs.generated.h
+D:\UE4 Projects\TankProject\Tankogeddon\Source\Tankogeddon\Projectile.h
+D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\Projectile.generated.h
+D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\Cannon.generated.h
 D:\UE4 Projects\TankProject\Tankogeddon\Source\Tankogeddon\TankPlayerController.h
 D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\TankPlayerController.generated.h
 D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Inc\Tankogeddon\TankPawn.generated.h

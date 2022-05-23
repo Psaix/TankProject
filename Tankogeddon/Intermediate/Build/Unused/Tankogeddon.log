@@ -1,7 +1,29 @@
 ﻿  Using 'git status' to determine working set for adaptive non-unity build (D:\UE4 Projects\TankProject).
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-0011.dll
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-0011.pdb
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-0887.dll
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-0887.pdb
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-1115.dll
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-1115.pdb
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-6169.dll
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-6169.pdb
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-6835.dll
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-6835.pdb
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-6904.dll
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Binaries\Win64\UE4Editor-Tankogeddon-6904.pdb
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon-0011.lib
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon-0887.lib
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon-1115.lib
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon-6169.lib
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon-6835.lib
+  Deleted hot-reload file: D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon-6904.lib
   Building TankogeddonEditor...
   Using Visual Studio 2022 14.30.30709 toolchain (C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-  Building 1 action with 8 processes...
-    [1/1] TankogeddonEditor.target
-  Total time in Parallel executor: 0,39 seconds
-  Total execution time: 1,91 seconds
+  Building 3 actions with 8 processes...
+    [1/3] UE4Editor-Tankogeddon.lib
+       Создается библиотека D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon.lib и объект D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon.exp
+    [2/3] UE4Editor-Tankogeddon.dll
+       Создается библиотека D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon.suppressed.lib и объект D:\UE4 Projects\TankProject\Tankogeddon\Intermediate\Build\Win64\UE4Editor\Development\Tankogeddon\UE4Editor-Tankogeddon.suppressed.exp
+    [3/3] TankogeddonEditor.target
+  Total time in Parallel executor: 5,01 seconds
+  Total execution time: 18,15 seconds

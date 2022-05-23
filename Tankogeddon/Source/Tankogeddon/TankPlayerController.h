@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//*\\|*|-PSAIX-|*|//*\\
 
 #pragma once
 
@@ -32,5 +32,8 @@ protected:
 	virtual void BeginPlay() override;
 	void MoveForward(float AxisValue);
 	void RotateRight(float AxisValue);
-
+	void Fire();
+	void FireSpecial();
+	void StopFire();
+	void OnReload();
 };

@@ -1,7 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//*\\|*|-PSAIX-|*|//*\\
 
 #pragma once
 
+#include "Cannon.h"
 #include "CoreMinimal.h"
 #include "TankPlayerController.h"
 #include "GameFramework/Pawn.h"
@@ -11,6 +12,8 @@
 class UStaticMeshComponent;
 class UCameraComponent;
 class USpringArmComponent;
+class ATankPlayerController;
+class ACannon;
 
 
 UCLASS()
@@ -23,10 +26,17 @@ public:
 
 	UFUNCTION()
 		void BeginPlay();
+
 	void Tick(float DeltaTime);
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	void MoveForward(float AxisValue);
 	void RotateRight(float AxisValue);
+
+	UFUNCTION()
+		void Fire();
+	void FireSpecial();
+	void OnReload();
+	void StopFire();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -42,7 +52,6 @@ protected:
 		UCameraComponent* Camera;
 
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
 		float MoveSpeed = 230;
 
@@ -55,6 +64,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
 		float TurretRotationInterpolationKey = 0.5f;
 
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UArrowComponent* CannonSetupPoint;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
+		TSubclassOf<ACannon> CannonClass;
+
+	UPROPERTY()
+		ACannon* Cannon;
+
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
 	float CurrentRightAxisValue;
@@ -62,5 +81,6 @@ protected:
 	UPROPERTY()
 		ATankPlayerController* TankController;
 
+	void SetupCannon();
 
 };

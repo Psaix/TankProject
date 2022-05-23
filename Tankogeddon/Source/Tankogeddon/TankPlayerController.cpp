@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//*\\|*|-PSAIX-|*|//*\\
 
 #include "TankPawn.h"
 #include "DrawDebugHelpers.h"
@@ -12,10 +12,20 @@ ATankPlayerController::ATankPlayerController()
 void ATankPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	InputComponent->BindAxis("MoveForward", this,
-		&ATankPlayerController::MoveForward);
-	InputComponent->BindAxis("RotateRight", this,
-		&ATankPlayerController::RotateRight);
+	InputComponent->BindAxis("MoveForward", this, &ATankPlayerController::MoveForward);
+	InputComponent->BindAxis("RotateRight", this, &ATankPlayerController::RotateRight);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &ATankPlayerController::Fire);
+
+	// Alternative fire input.
+	// Both actions are bind to the right mouse button.
+	// FireSpecial() method works on pressed right mouse button.
+	InputComponent->BindAction("FireSpecial", IE_Pressed, this, &ATankPlayerController::FireSpecial);
+	
+	//  StopFire() method works on released right mouse bbutton.
+	InputComponent->BindAction("FireSpecial", IE_Released, this, &ATankPlayerController::StopFire);
+
+	// OnReload() method reloads cannon ammo. Works pressed "R" button.
+	InputComponent->BindAction("OnReload", IE_Pressed, this, &ATankPlayerController::OnReload);
 }
 void ATankPlayerController::Tick(float DeltaTime)
 {
@@ -41,6 +51,27 @@ void ATankPlayerController::MoveForward(float AxisValue)
 void ATankPlayerController::RotateRight(float AxisValue)
 {
 	TankPawn->RotateRight(AxisValue);
+}
+
+void ATankPlayerController::Fire()
+{
+	TankPawn->Fire();
+}
+
+void ATankPlayerController::FireSpecial()
+{
+	TankPawn->FireSpecial();
+}
+
+void ATankPlayerController::StopFire()
+{
+	TankPawn->StopFire();
+}
+
+
+void ATankPlayerController::OnReload()
+{
+	TankPawn->OnReload();
 }
 
 
