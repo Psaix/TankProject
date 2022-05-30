@@ -81,6 +81,8 @@ protected:
 	UPROPERTY()
 		ATankPlayerController* TankController;
 
-	void SetupCannon();
+	public:
+
+	void SetupCannon(TSubclassOf<ACannon> cannonClass);
 
 };

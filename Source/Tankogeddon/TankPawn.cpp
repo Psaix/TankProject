@@ -38,7 +38,7 @@ void ATankPawn::BeginPlay()
 	Super::BeginPlay();
 	TankController = Cast<ATankPlayerController>(GetController());
 
-	SetupCannon();
+	SetupCannon(CannonClass);
 }
 
 
@@ -89,8 +89,12 @@ void ATankPawn::RotateRight(float AxisValue)
 	TargetRightAxisValue = AxisValue;
 }
 
-void ATankPawn::SetupCannon()
+void ATankPawn::SetupCannon(TSubclassOf<ACannon> cannonClass)
 {
+	if (cannonClass)
+	{
+		CannonClass = cannonClass;
+	}
 	if (Cannon)
 	{
 		Cannon->Destroy();
@@ -98,6 +102,7 @@ void ATankPawn::SetupCannon()
 	FActorSpawnParameters params;
 	params.Instigator = this;
 	params.Owner = this;
+
 	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
