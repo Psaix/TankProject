@@ -36,4 +36,5 @@ protected:
 	void FireSpecial();
 	void StopFire();
 	void OnReload();
+	void Swap();
 };

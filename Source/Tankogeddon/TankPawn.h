@@ -37,6 +37,7 @@ public:
 	void FireSpecial();
 	void OnReload();
 	void StopFire();
+	void Swap();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")

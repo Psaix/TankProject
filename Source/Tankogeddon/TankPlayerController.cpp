@@ -26,6 +26,8 @@ void ATankPlayerController::SetupInputComponent()
 
 	// OnReload() method reloads cannon ammo. Works pressed "R" button.
 	InputComponent->BindAction("OnReload", IE_Pressed, this, &ATankPlayerController::OnReload);
+
+	InputComponent->BindAction("Swap", IE_Pressed, this, &ATankPlayerController::Swap);
 }
 void ATankPlayerController::Tick(float DeltaTime)
 {
@@ -72,5 +74,10 @@ void ATankPlayerController::StopFire()
 void ATankPlayerController::OnReload()
 {
 	TankPawn->OnReload();
+}
+
+void ATankPlayerController::Swap()
+{
+	TankPawn->Swap();
 }
 

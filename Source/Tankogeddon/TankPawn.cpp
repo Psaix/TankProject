@@ -139,3 +139,11 @@ void ATankPawn::StopFire()
 		Cannon->StopFire();
 	}
 }
+
+void ATankPawn::Swap()
+{
+	if (Cannon)
+	{
+		Cannon->Swap();
+	}
+}

@@ -28,9 +28,11 @@ AAmmoBox::AAmmoBox()
 void AAmmoBox::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ATankPawn* Tank = Cast<ATankPawn>(OtherActor);
+	ACannon* Cannon;
 	if (Tank)
 	{
 		Tank->SetupCannon(CannonClass);
+		Cannon->ammoPool = 25;
 	}
 
 	Destroy();

@@ -42,9 +42,7 @@ protected:
 		int32 loadedAmmo;
 
 	// ammoPool variable. Ammo in the inventory. If there is no ammo in the inventory, cannon can't be reloaded.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
-		int32 ammoPool;
-
+	
 	FTimerHandle ReloadTimerHandle;
 
 	// DelayShotHandle timer for the Shot() method cycle.Implemening autorifle fire to the FireSpecial() action.
@@ -55,6 +53,9 @@ protected:
 public:	
 	ACannon();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
+		int32 ammoPool;
+
 	void Fire();
 
 	void FireSpecial();
@@ -64,6 +65,8 @@ public:
 	void StopFire();
 
 	void OnReload();
+
+	void Swap();
 
 	bool IsReadyToFire();
 

@@ -144,6 +144,17 @@ void ACannon::OnReload()
 	}
 }
 
+void ACannon::Swap()
+{
+	if (Type == ECannonType::FireProjectile)
+	{
+		Type = ECannonType::FireTrace;
+	}
+	else
+	{
+		Type = ECannonType::FireProjectile;
+	}
+}
 
 
 bool ACannon::IsReadyToFire()
