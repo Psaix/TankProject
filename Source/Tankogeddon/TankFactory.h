@@ -5,19 +5,21 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "TankPlayerController.h"
+#include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "Cannon.h"
 #include "HealthComponent.h"
+#include "TankFactory.generated.h"
 
 class UStaticMeshComponent;
 class UCameraComponent;
 class USpringArmComponent;
-class ATankPlayerController;
-class ACannon;
+class ATankPlayerController;;
+class Cannon;
 
-#include "TankFactory.generated.h"
 
 UCLASS()
 class TANKOGEDDON_API ATankFactory : public APawn

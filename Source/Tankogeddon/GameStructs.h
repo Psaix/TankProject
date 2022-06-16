@@ -22,6 +22,4 @@ struct FDamageData
 		AActor* Instigator;
 	UPROPERTY()
 		AActor* DamageMaker;
-	UPROPERTY()
-		AActor* ScoreMaker;
 };

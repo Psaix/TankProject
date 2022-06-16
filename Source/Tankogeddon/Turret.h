@@ -3,12 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ArrowComponent.h"
-#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
-#include "Cannon.h"
 #include "DamageTaker.h"
-#include "HealthComponent.h"
 #include "TankFactory.h"
 #include "Turret.generated.h"
 

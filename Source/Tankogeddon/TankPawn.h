@@ -2,23 +2,13 @@
 
 #pragma once
 
-#include "Cannon.h"
 #include "CoreMinimal.h"
 #include "DamageTaker.h"
-#include "HealthComponent.h"
 #include "Components/BoxComponent.h"
-#include "TankPlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "TankFactory.h"
-
 #include "TankPawn.generated.h"
 
-
-class UStaticMeshComponent;
-class UCameraComponent;
-class USpringArmComponent;
-class ATankPlayerController;
-class ACannon;
 
 
 UCLASS()

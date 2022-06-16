@@ -3,9 +3,7 @@
 #include "TankPawn.h"
 #include "Components/StaticMeshComponent.h"
 #include "DrawDebugHelpers.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "TankPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 

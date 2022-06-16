@@ -6,6 +6,7 @@
 #include "GameStructs.h"
 #include "DamageTaker.h"
 #include "Projectile.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/Actor.h"
 #include "Cannon.generated.h"
 
