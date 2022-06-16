@@ -2,36 +2,13 @@
 
 #include "TankPawn.h"
 #include "Components/StaticMeshComponent.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "TankPlayerController.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/ArrowComponent.h"
 
-
-ATankPawn::ATankPawn()
-{
-	PrimaryActorTick.bCanEverTick = true;
-
-	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank body"));
-	RootComponent = BodyMesh;
-
-	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank turret"));
-	TurretMesh->SetupAttachment(BodyMesh);
-
-	CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
-	CannonSetupPoint->AttachToComponent(TurretMesh,FAttachmentTransformRules::KeepRelativeTransform);
-
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
-	SpringArm->SetupAttachment(BodyMesh);
-	SpringArm->bDoCollisionTest = false;
-	SpringArm->bInheritPitch = false;
-	SpringArm->bInheritYaw = false;
-	SpringArm->bInheritRoll = false;
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(SpringArm);
-
-}
 
 void ATankPawn::BeginPlay()
 {
@@ -105,6 +82,27 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> cannonClass)
 
 	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, params);
 	Cannon->AttachToComponent(CannonSetupPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+}
+
+void ATankPawn::TakeDamage(FDamageData DamageData)
+{
+	HealthComponent->TakeDamage(DamageData);
+}
+
+void ATankPawn::Die()
+{
+	if (Cannon)
+	{
+		Cannon->KillerActor = "Turret";
+		Cannon->ActorKilled = "You";
+		Cannon->Killed();
+	}
+	Destroy();
+}
+
+void ATankPawn::DamageTaked(float DamageValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Tank %s taked damage:%f Health:%f"), *GetName(),DamageValue, HealthComponent->GetHealth());
 }
 
 

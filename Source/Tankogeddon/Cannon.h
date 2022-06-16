@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameStructs.h"
+#include "DamageTaker.h"
 #include "Projectile.h"
 #include "GameFramework/Actor.h"
 #include "Cannon.generated.h"
@@ -33,13 +34,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		ECannonType Type = ECannonType::FireProjectile;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		TSubclassOf<AProjectile> ProjectileClass;
+		TSubclassOf<AProjectile>ProjectileClass;
 
 	// loadedAmmo variable. The amount of ammo in the cannon. If there is no ammo (loadedAmmo <= 0) the cannon can't fire.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
 		int32 loadedAmmo;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+		float Damage = 1;
 
 	// ammoPool variable. Ammo in the inventory. If there is no ammo in the inventory, cannon can't be reloaded.
 	
@@ -49,7 +53,7 @@ protected:
 	FTimerHandle DelayShotHandle;
 
 	bool ReadyToFire = false;
-	
+
 public:	
 	ACannon();
 
@@ -70,9 +74,15 @@ public:
 
 	bool IsReadyToFire();
 
+	UFUNCTION()
+		void Killed();
+
+	FString ActorKilled;
+
+	FString KillerActor;
+
 protected:
 	virtual void BeginPlay() override;
 
 	void Reload();
-
 };

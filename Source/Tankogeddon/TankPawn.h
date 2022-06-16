@@ -4,8 +4,13 @@
 
 #include "Cannon.h"
 #include "CoreMinimal.h"
+#include "DamageTaker.h"
+#include "HealthComponent.h"
+#include "Components/BoxComponent.h"
 #include "TankPlayerController.h"
 #include "GameFramework/Pawn.h"
+#include "TankFactory.h"
+
 #include "TankPawn.generated.h"
 
 
@@ -17,12 +22,58 @@ class ACannon;
 
 
 UCLASS()
-class TANKOGEDDON_API ATankPawn : public APawn
+class TANKOGEDDON_API ATankPawn : public ATankFactory, public IDamageTaker
 {
 	GENERATED_BODY()
 
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+		float MoveSpeed = 230;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+		float RotationSpeed = 180;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
+		float InterpolationKey = 0.1f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
+		float TurretRotationInterpolationKey = 0.5f;
+
+
+	float TargetForwardAxisValue;
+	float TargetRightAxisValue;
+	float CurrentRightAxisValue;
+
 public:
-	ATankPawn();
+	ATankPawn()
+	{
+		PrimaryActorTick.bCanEverTick = true;
+
+		BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank body"));
+		RootComponent = BodyMesh;
+
+		TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tank turret"));
+		TurretMesh->SetupAttachment(BodyMesh);
+
+		CannonSetupPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Cannon setup point"));
+		CannonSetupPoint->AttachToComponent(TurretMesh, FAttachmentTransformRules::KeepRelativeTransform);
+
+		SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
+		SpringArm->SetupAttachment(BodyMesh);
+		SpringArm->bDoCollisionTest = false;
+		SpringArm->bInheritPitch = false;
+		SpringArm->bInheritYaw = false;
+		SpringArm->bInheritRoll = false;
+		Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+		Camera->SetupAttachment(SpringArm);
+
+		HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Healthcomponent"));
+		HealthComponent->OnDie.AddUObject(this, &ATankPawn::Die);
+		HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
+		HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
+		HitCollider->SetupAttachment(BodyMesh);
+	}
 
 	UFUNCTION()
 		void BeginPlay();
@@ -39,51 +90,19 @@ public:
 	void StopFire();
 	void Swap();
 
-protected:
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* BodyMesh;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UStaticMeshComponent* TurretMesh;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		USpringArmComponent* SpringArm;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UCameraComponent* Camera;
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float MoveSpeed = 230;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float RotationSpeed = 180;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Speed")
-		float InterpolationKey = 0.1f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Speed")
-		float TurretRotationInterpolationKey = 0.5f;
-
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
-		UArrowComponent* CannonSetupPoint;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Turret|Cannon")
-		TSubclassOf<ACannon> CannonClass;
-
-	UPROPERTY()
-		ACannon* Cannon;
-
-	float TargetForwardAxisValue;
-	float TargetRightAxisValue;
-	float CurrentRightAxisValue;
-
-	UPROPERTY()
-		ATankPlayerController* TankController;
-
-	public:
+public:
 
 	void SetupCannon(TSubclassOf<ACannon> cannonClass);
+
+	UFUNCTION()
+		void TakeDamage(FDamageData DamageData);
+
+protected:
+
+	UFUNCTION()
+		void Die();
+
+	UFUNCTION()
+		void DamageTaked(float DamageValue);
 
 };

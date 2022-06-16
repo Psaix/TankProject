@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DamageTaker.h"
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
@@ -10,6 +11,8 @@ UCLASS()
 class TANKOGEDDON_API AProjectile : public AActor
 {
 	GENERATED_BODY()
+
+		DECLARE_EVENT(AProjectile, FOnDestroyed)
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
@@ -39,5 +42,11 @@ protected:
 
 	UFUNCTION()
 		void Move();
+
+	void Killed();
+
+public:
+
+	FOnDestroyed OnKill;
 
 };

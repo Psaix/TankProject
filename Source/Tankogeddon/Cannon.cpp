@@ -45,6 +45,7 @@ void ACannon::Fire()
 			ProjectileSpawnPoint->GetComponentRotation());
 		if (projectile)
 		{
+			projectile->OnKill.AddUObject(this, &ACannon::Killed);
 			projectile->Start();
 		}
 	}
@@ -61,9 +62,23 @@ void ACannon::Fire()
 		if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility, traceParams))
 		{
 			DrawDebugLine(GetWorld(), start, hitResult.Location, FColor::Red, false,0.5f, 0, 5);
-			if (hitResult.Actor.Get())
+			AActor* owner = GetOwner();
+			AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
+			if (hitResult.Actor.Get() != owner && hitResult.Actor.Get() != ownerByOwner)
 			{
-				hitResult.Actor.Get()->Destroy();
+				IDamageTaker* damageTakerActor = Cast<IDamageTaker>(hitResult.Actor.Get());
+				if (damageTakerActor)
+				{
+					FDamageData damageData;
+					damageData.DamageValue = Damage;
+					damageData.Instigator = owner;
+					damageData.DamageMaker = this;
+					damageTakerActor->TakeDamage(damageData);
+				}
+				else
+				{
+					hitResult.Actor.Get()->Destroy();
+				}
 			}
 		}
 		else
@@ -110,6 +125,7 @@ void ACannon::Shot()
 
 		if (projectile)
 		{
+			projectile->OnKill.AddUObject(this, &ACannon::Killed);
 			projectile->Start();
 		}
 	}
@@ -173,5 +189,10 @@ void ACannon::BeginPlay()
 	Super::BeginPlay();
 	Reload();
 
+}
+
+void ACannon::Killed()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s destroyed %s"), *KillerActor, *ActorKilled);
 }
 
