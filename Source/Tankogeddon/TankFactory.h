@@ -67,6 +67,12 @@ protected:
 	UPROPERTY()
 		APawn* PlayerPawn;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystemComponent* TShootEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UAudioComponent* TAudioEffect;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

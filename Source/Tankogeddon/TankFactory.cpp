@@ -18,6 +18,7 @@ void ATankFactory::BeginPlay()
 	
 }
 
+
 // Called every frame
 void ATankFactory::Tick(float DeltaTime)
 {

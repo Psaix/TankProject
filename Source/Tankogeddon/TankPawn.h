@@ -9,8 +9,6 @@
 #include "TankFactory.h"
 #include "TankPawn.generated.h"
 
-
-
 UCLASS()
 class TANKOGEDDON_API ATankPawn : public ATankFactory, public IDamageTaker
 {
@@ -34,6 +32,14 @@ protected:
 	float TargetForwardAxisValue;
 	float TargetRightAxisValue;
 	float CurrentRightAxisValue;
+
+	float TurretRightAxisValue;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrolpoints" , Meta = (MakeEditWidget = true))
+		TArray<FVector> PatrollingPoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Moveparams | Accurency")
+		float MovementAccurency = 50;
 
 public:
 	ATankPawn()
@@ -63,6 +69,11 @@ public:
 		HealthComponent->OnDamaged.AddUObject(this, &ATankPawn::DamageTaked);
 		HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 		HitCollider->SetupAttachment(BodyMesh);
+
+		TShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShootEffect"));
+		TShootEffect->SetupAttachment(BodyMesh);
+
+		TAudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioEffect"));
 	}
 
 	UFUNCTION()
@@ -72,6 +83,7 @@ public:
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 	void MoveForward(float AxisValue);
 	void RotateRight(float AxisValue);
+	void TurretRotateRight(float AxisValue);
 
 	UFUNCTION()
 		void Fire();
@@ -80,12 +92,31 @@ public:
 	void StopFire();
 	void Swap();
 
+
+	UFUNCTION()
+		TArray<FVector> GetPatrollingPoints() { return PatrollingPoints; };
+
+	UFUNCTION()
+		float GetMovementAccurency() { return MovementAccurency; };
+
+
+
+	UFUNCTION()
+		FVector GetTurretForwardVector();
+
+	UFUNCTION()
+		void RotateTurretTo(FVector TargetPosition);
+
+	FVector GetEyesPosition();
+
 public:
 
 	void SetupCannon(TSubclassOf<ACannon> cannonClass);
 
 	UFUNCTION()
 		void TakeDamage(FDamageData DamageData);
+
+	ATankPawn* TankPawn;
 
 protected:
 

@@ -17,36 +17,57 @@ void ATankPawn::BeginPlay()
 }
 
 
+FVector ATankPawn::GetTurretForwardVector()
+{
+	return TurretMesh->GetForwardVector();
+}
+
+
 void ATankPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	// Tank movement
 	FVector currentLocation = GetActorLocation();
 	FVector forwardVector = GetActorForwardVector();
-	FVector movePosition = currentLocation + forwardVector * MoveSpeed * TargetForwardAxisValue * DeltaTime;
+	FVector movePosition = currentLocation + forwardVector * MoveSpeed *
+		TargetForwardAxisValue * DeltaTime;
 	SetActorLocation(movePosition, true);
 
-	CurrentRightAxisValue = FMath::Lerp(CurrentRightAxisValue,
-		TargetRightAxisValue, InterpolationKey);
 
+	// Tank rotation
+	CurrentRightAxisValue = FMath::Lerp(CurrentRightAxisValue, TargetRightAxisValue,InterpolationKey);
 	float yawRotation = RotationSpeed * CurrentRightAxisValue * DeltaTime;
 	FRotator currentRotation = GetActorRotation();
-
 	yawRotation = currentRotation.Yaw + yawRotation;
-
 	FRotator newRotation = FRotator(0, yawRotation, 0);
 	SetActorRotation(newRotation);
 
+	// Turret rotation
 	if (TankController)
 	{
 		FVector mousePos = TankController->GetMousePos();
-		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), mousePos);
-		FRotator currRotation = TurretMesh->GetComponentRotation();
-		targetRotation.Pitch = currRotation.Pitch;
-		targetRotation.Roll = currRotation.Roll;
-		TurretMesh->SetWorldRotation(FMath::Lerp(currRotation, targetRotation,
-			TurretRotationInterpolationKey));
+		RotateTurretTo(mousePos);
 	}
+
 }
+
+
+void ATankPawn::RotateTurretTo(FVector TargetPosition)
+{
+	FRotator targetRotation =
+		UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetPosition);
+	FRotator currRotation = TurretMesh->GetComponentRotation();
+	targetRotation.Pitch = currRotation.Pitch;
+	targetRotation.Roll = currRotation.Roll;
+	TurretMesh->SetWorldRotation(FMath::Lerp(currRotation, targetRotation,
+		TurretRotationInterpolationKey));
+}
+
+FVector ATankPawn::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
+}
+
 
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -62,6 +83,11 @@ void ATankPawn::MoveForward(float AxisValue)
 void ATankPawn::RotateRight(float AxisValue)
 {
 	TargetRightAxisValue = AxisValue;
+}
+
+void ATankPawn::TurretRotateRight(float AxisValue)
+{
+	TurretRightAxisValue = AxisValue;
 }
 
 void ATankPawn::SetupCannon(TSubclassOf<ACannon> cannonClass)
@@ -85,6 +111,8 @@ void ATankPawn::SetupCannon(TSubclassOf<ACannon> cannonClass)
 void ATankPawn::TakeDamage(FDamageData DamageData)
 {
 	HealthComponent->TakeDamage(DamageData);
+	TShootEffect->ActivateSystem();
+	TAudioEffect->Play();
 }
 
 void ATankPawn::Die()

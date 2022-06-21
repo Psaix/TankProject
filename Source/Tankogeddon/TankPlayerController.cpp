@@ -14,6 +14,7 @@ void ATankPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 	InputComponent->BindAxis("MoveForward", this, &ATankPlayerController::MoveForward);
 	InputComponent->BindAxis("RotateRight", this, &ATankPlayerController::RotateRight);
+	InputComponent->BindAxis("TurretRotateRight", this, &ATankPlayerController::TurretRotateRight);
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ATankPlayerController::Fire);
 
 	// Alternative fire input.
@@ -38,7 +39,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 	FVector dir = MousePos - pawnPos;
 	dir.Normalize();
 	MousePos = pawnPos + dir * 1000;
-	DrawDebugLine(GetWorld(), pawnPos, MousePos, FColor::Green, false, 0.1f, 0, 5);
+	//DrawDebugLine(GetWorld(), pawnPos, MousePos, FColor::Green, false, 0.1f, 0, 5);
 }
 void ATankPlayerController::BeginPlay()
 {
@@ -79,5 +80,10 @@ void ATankPlayerController::OnReload()
 void ATankPlayerController::Swap()
 {
 	TankPawn->Swap();
+}
+
+void ATankPlayerController::TurretRotateRight(float AxisValue)
+{
+	TankPawn->TurretRotateRight(AxisValue);
 }
 

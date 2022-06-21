@@ -22,6 +22,11 @@ ACannon::ACannon()
 	ProjectileSpawnPoint = CreateDefaultSubobject<UArrowComponent>(TEXT("Spawnpoint"));
 	ProjectileSpawnPoint->SetupAttachment(Mesh);
 
+	ShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShootEffect"));
+	ShootEffect->SetupAttachment(ProjectileSpawnPoint);
+
+	AudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioEffect"));
+
 	loadedAmmo = 5;
 	ammoPool = 25;
 }
@@ -37,9 +42,24 @@ void ACannon::Fire()
 
 	ReadyToFire = false;
 
+	if (GetOwner() && GetOwner() == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		if (ShootForceEffect)
+		{
+			FForceFeedbackParameters shootForceEffectParams;
+			shootForceEffectParams.bLooping = false;
+			shootForceEffectParams.Tag = "shootForceEffectParams";
+			GetWorld()->GetFirstPlayerController()->ClientPlayForceFeedback(ShootForceEffect,
+				shootForceEffectParams);
+		}
+		if (ShootShake)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(ShootShake);
+		}
+	}
+
 	if (Type == ECannonType::FireProjectile)
 	{
-		
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
 			ProjectileSpawnPoint->GetComponentLocation(),
 			ProjectileSpawnPoint->GetComponentRotation());
@@ -47,8 +67,11 @@ void ACannon::Fire()
 		{
 			projectile->OnKill.AddUObject(this, &ACannon::Killed);
 			projectile->Start();
+			ShootEffect->ActivateSystem();
+			AudioEffect->Play();
 		}
 	}
+
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(10, 1, FColor::Green, "Fire - trace");
@@ -83,11 +106,11 @@ void ACannon::Fire()
 		}
 		else
 		{
-			DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.5f, 0, 5);
+		DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.5f, 0, 5);
 		}
 
 	}
-
+	
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
 }
 
@@ -107,15 +130,28 @@ void ACannon::FireSpecial()
 void ACannon::Shot()
 {
 	// Same as Fire() method.
-	
-	// FareRate increased to 10.
-	FireRate = 10;
 
 	if (!ReadyToFire)
 	{
 		return;
 	}
 	ReadyToFire = false;
+
+	if (GetOwner() && GetOwner() == GetWorld()->GetFirstPlayerController()->GetPawn())
+	{
+		if (ShootForceEffect)
+		{
+			FForceFeedbackParameters shootForceEffectParams;
+			shootForceEffectParams.bLooping = false;
+			shootForceEffectParams.Tag = "shootForceEffectParams";
+			GetWorld()->GetFirstPlayerController()->ClientPlayForceFeedback(ShootForceEffect,
+				shootForceEffectParams);
+		}
+		if (ShootShake)
+		{
+			GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(ShootShake);
+		}
+	}
 
 	if (Type == ECannonType::FireProjectile)
 	{
@@ -127,6 +163,8 @@ void ACannon::Shot()
 		{
 			projectile->OnKill.AddUObject(this, &ACannon::Killed);
 			projectile->Start();
+			ShootEffect->ActivateSystem();
+			AudioEffect->Play();
 		}
 	}
 	else
@@ -136,8 +174,6 @@ void ACannon::Shot()
 
 	GetWorld()->GetTimerManager().SetTimer(ReloadTimerHandle, this, &ACannon::Reload, 1 / FireRate, false);
 
-	// FireRate decreased back to 8.
-	FireRate = 8;
 }
 
 void ACannon::StopFire()

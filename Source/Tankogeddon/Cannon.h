@@ -6,8 +6,12 @@
 #include "GameStructs.h"
 #include "DamageTaker.h"
 #include "Projectile.h"
+#include "Camera/CameraShakeBase.h"
+#include "Components/AudioComponent.h"
 #include "Components/ArrowComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/ForceFeedbackEffect.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Cannon.generated.h"
 
 class UArrowComponent;
@@ -25,7 +29,7 @@ protected:
 		UArrowComponent* ProjectileSpawnPoint;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
-		float FireRate = 8;
+		float FireRate = 5;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Fire params")
 		float FireRange = 1000;
@@ -54,6 +58,22 @@ protected:
 	FTimerHandle DelayShotHandle;
 
 	bool ReadyToFire = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystemComponent* ShootEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UAudioComponent* AudioEffect;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+		UForceFeedbackEffect* ShootForceEffect;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UCameraShakeBase> ShootShake;
+
+	bool Animation = false;
+
 
 public:	
 	ACannon();

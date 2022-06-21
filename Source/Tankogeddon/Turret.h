@@ -8,6 +8,7 @@
 #include "TankFactory.h"
 #include "Turret.generated.h"
 
+
 UCLASS()
 class TANKOGEDDON_API ATurret : public ATankFactory, public IDamageTaker
 {
@@ -31,6 +32,13 @@ protected:
 
 	const FString TurretMeshPath = "StaticMesh'/Game/CSC/Meshes/SM_CSC_Gun1.SM_CSC_Gun1'";
 
+	FTimerHandle DelayDestroyHandle;
+
+	bool IsPlayerSeen();
+
+	UPROPERTY()
+		ATurret* Turret;
+
 public:	
 	ATurret();
 
@@ -43,6 +51,8 @@ public:
 	UFUNCTION()
 		void DamageTaked(float DamageValue);
 
+	FVector GetEyesPosition();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -53,4 +63,5 @@ protected:
 	bool IsPlayerInRange();
 	bool CanFire();
 	void Fire();
+	void Death();
 };

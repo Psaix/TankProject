@@ -9,6 +9,35 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
+#include "DrawDebugHelpers.h"
+
+
+FVector ATurret::GetEyesPosition()
+{
+	return CannonSetupPoint->GetComponentLocation();
+}
+
+bool ATurret::IsPlayerSeen()
+{
+	FVector playerPos = PlayerPawn->GetActorLocation();
+	FVector eyesPos = GetEyesPosition();
+	FHitResult hitResult;
+	FCollisionQueryParams traceParams = FCollisionQueryParams(FName(TEXT("FireTrace")), true, this);
+	traceParams.bTraceComplex = true;
+	traceParams.AddIgnoredActor(Turret);
+	traceParams.bReturnPhysicalMaterial = false;
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, eyesPos, playerPos,ECollisionChannel::ECC_Visibility, traceParams))
+	{
+		if (hitResult.Actor.Get())
+		{
+			DrawDebugLine(GetWorld(), eyesPos, hitResult.Location, FColor::Cyan,false, 0.5f, 0, 10);
+			return hitResult.Actor.Get() == PlayerPawn;
+		}
+	}
+	return false;
+	DrawDebugLine(GetWorld(), eyesPos, playerPos, FColor::Cyan, false, 0.5f, 0, 10);
+
+}
 
 // Sets default values
 ATurret::ATurret()
@@ -36,6 +65,11 @@ ATurret::ATurret()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Healthcomponent"));
 	HealthComponent->OnDie.AddUObject(this, &ATurret::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &ATurret::DamageTaked);
+
+	TShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShootEffect"));
+	TShootEffect->SetupAttachment(TurretMesh);
+
+	TAudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioEffect"));
 }
 
 void ATurret::TakeDamage(FDamageData DamageData)
@@ -47,11 +81,13 @@ void ATurret::Die()
 {
 	if (Cannon)
 	{
+		TShootEffect->ActivateSystem();
+		TAudioEffect->Play();
 		Cannon->KillerActor = "You";
 		Cannon->ActorKilled = "the Turret";
 		Cannon->Killed();
 	}
-	Destroy();
+	GetWorld()->GetTimerManager().SetTimer(DelayDestroyHandle, this, &ATurret::Death, 0.2, false);
 }
 
 void ATurret::DamageTaked(float DamageValue)
@@ -70,8 +106,7 @@ void ATurret::BeginPlay()
 	Cannon->AttachToComponent(CannonSetupPoint,FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	FTimerHandle _targetingTimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this,
-		&ATurret::Targeting, TargetingRate, true, TargetingRate);
+	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATurret::Targeting, TargetingRate, true, TargetingRate);
 	
 }
 
@@ -84,15 +119,14 @@ void ATurret::Destroyed()
 
 void ATurret::Targeting()
 {
-	if (IsPlayerInRange())
-	{
-		RotateToPlayer();
-	}
-	if (CanFire() && Cannon && Cannon->IsReadyToFire())
+	if (IsPlayerSeen() && CanFire() && Cannon && Cannon->IsReadyToFire())
 	{
 		Fire();
 	}
-
+	else
+	{
+		RotateToPlayer();
+	}
 }
 
 void ATurret::RotateToPlayer()
@@ -120,9 +154,14 @@ bool ATurret::CanFire()
 	return aimAngle <= Accurency;
 }
 
+
 void ATurret::Fire()
 {
 	if (Cannon)
 		Cannon->Fire();
+}
 
+void ATurret::Death()
+{
+	Destroy();
 }

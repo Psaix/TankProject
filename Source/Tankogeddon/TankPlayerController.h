@@ -37,4 +37,5 @@ protected:
 	void StopFire();
 	void OnReload();
 	void Swap();
+	void TurretRotateRight(float AxisValue);
 };
