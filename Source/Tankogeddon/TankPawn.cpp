@@ -68,6 +68,11 @@ FVector ATankPawn::GetEyesPosition()
 	return CannonSetupPoint->GetComponentLocation();
 }
 
+void ATankPawn::SetPatrollingPoints(TArray<ATargetPoint*> NewPatrollingPoints)
+{
+	PatrollingPoints = NewPatrollingPoints;
+}
+
 
 void ATankPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -170,4 +175,14 @@ void ATankPawn::Swap()
 	{
 		Cannon->Swap();
 	}
+}
+
+TArray<FVector> ATankPawn::GetPatrollingPoints()
+{
+	TArray<FVector> points;
+	for (ATargetPoint* point : PatrollingPoints)
+	{
+		points.Add(point->GetActorLocation());
+	}
+	return points;
 }

@@ -49,7 +49,6 @@ void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 		}
 		Destroy();
 	}
-
 }
 
 void AProjectile::Move()

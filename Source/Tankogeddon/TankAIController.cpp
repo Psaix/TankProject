@@ -9,21 +9,20 @@
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	TankPawn = Cast<ATankPawn>(GetPawn());
-	FVector pawnLocation = TankPawn->GetActorLocation();
-	MovementAccurency = TankPawn->GetMovementAccurency();
-	TArray<FVector> points = TankPawn->GetPatrollingPoints();
-	for (FVector point : points)
-	{
-		PatrollingPoints.Add(point + pawnLocation);
-	}
-	CurrentPatrolPointIndex = 0;
+	Initialize();
 }
 
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!TankPawn)
+		Initialize();
+
+	if (!TankPawn)
+		return;
+
 	TankPawn->MoveForward(1);
+
 	float rotationValue = GetRotationgValue();
 	TankPawn->RotateRight(rotationValue);
 	Targeting();
@@ -43,7 +42,7 @@ float ATankAIController::GetRotationgValue()
 	moveDirection.Normalize();
 	FVector forwardDirection = TankPawn->GetActorForwardVector();
 	FVector rightDirection = TankPawn->GetActorRightVector();
-	//DrawDebugLine(GetWorld(), pawnLocation, currentPoint, FColor::Green, false,0.1f, 0, 5);
+	DrawDebugLine(GetWorld(), pawnLocation, currentPoint, FColor::Green, false,0.1f, 0, 5);
 
 	float forwardAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(forwardDirection, moveDirection)));
 
@@ -96,6 +95,8 @@ bool ATankAIController::CanFire()
 
 bool ATankAIController::IsPlayerSeen()
 {
+	if (!PlayerPawn)
+		Initialize();
 	FVector playerPos = PlayerPawn->GetActorLocation();
 	FVector eyesPos = TankPawn->GetEyesPosition();
 	FHitResult hitResult;
@@ -121,4 +122,21 @@ bool ATankAIController::IsPlayerSeen()
 void ATankAIController::Fire()
 {
 	TankPawn->Fire();
+}
+
+void ATankAIController::Initialize()
+{
+	TankPawn = Cast<ATankPawn>(GetPawn());
+	if (TankPawn)
+	{
+		PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+		FVector pawnLocation = TankPawn->GetActorLocation();
+		MovementAccurency = TankPawn->GetMovementAccurency();
+		TArray<FVector> points = TankPawn->GetPatrollingPoints();
+		for (FVector point : points)
+		{
+			PatrollingPoints.Add(point);
+		}
+		CurrentPatrolPointIndex = 0;
+	}
 }

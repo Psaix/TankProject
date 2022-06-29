@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/Pawn.h"
 #include "TankFactory.h"
+#include "Engine/TargetPoint.h"
 #include "TankPawn.generated.h"
 
 UCLASS()
@@ -36,7 +37,7 @@ protected:
 	float TurretRightAxisValue;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Move params|Patrolpoints" , Meta = (MakeEditWidget = true))
-		TArray<FVector> PatrollingPoints;
+		TArray<ATargetPoint*> PatrollingPoints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Moveparams | Accurency")
 		float MovementAccurency = 50;
@@ -94,7 +95,7 @@ public:
 
 
 	UFUNCTION()
-		TArray<FVector> GetPatrollingPoints() { return PatrollingPoints; };
+		TArray<FVector> GetPatrollingPoints();
 
 	UFUNCTION()
 		float GetMovementAccurency() { return MovementAccurency; };
@@ -108,6 +109,8 @@ public:
 		void RotateTurretTo(FVector TargetPosition);
 
 	FVector GetEyesPosition();
+
+	void SetPatrollingPoints(TArray<ATargetPoint*> NewPatrollingPoints);
 
 public:
 

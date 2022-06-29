@@ -33,7 +33,6 @@ ACannon::ACannon()
 
 void ACannon::Fire()
 {
-
 	if (loadedAmmo <= 0) { return; }
 
 	loadedAmmo -= 1;
