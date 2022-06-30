@@ -48,3 +48,8 @@ void UHealthComponent::AddHealth(float AddiditionalHealthValue)
 		CurrentHealth = MaxHealth;
 }
 
+void UHealthComponent::BeginPlay()
+{
+	CurrentHealth = MaxHealth;
+}
+

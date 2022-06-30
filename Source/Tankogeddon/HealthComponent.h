@@ -43,5 +43,5 @@ public:
 
 	void AddHealth(float AddiditionalHealthValue);
 
-		
+	virtual void BeginPlay() override;
 };

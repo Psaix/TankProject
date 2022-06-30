@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MapLoader.h"
 #include "TankPawn.h"
 #include "Engine/TargetPoint.h"
 #include "GameFramework/Actor.h"
 #include "TankSpawnFactory.generated.h"
 
 UCLASS()
-class TANKOGEDDON_API ATankSpawnFactory : public AActor
+class TANKOGEDDON_API ATankSpawnFactory : public AActor, public IDamageTaker
 {
 	GENERATED_BODY()
 protected:
@@ -35,6 +36,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
 		TArray<ATargetPoint*> TankWayPoints;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystemComponent* TShootEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystemComponent* DShootEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UAudioComponent* TAudioEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+		class UAudioComponent* DAudioEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn tanks params")
+		AMapLoader* LinkedMapLoader;
+
+	FTimerHandle DelayDeathHandle;
 
 public:	
 	// Sets default values for this actor's properties
@@ -55,4 +72,7 @@ protected:
 
 	UFUNCTION()
 		void DamageTaked(float DamageValue);
+
+	UFUNCTION()
+		void Death();
 };

@@ -30,6 +30,15 @@ ATankSpawnFactory::ATankSpawnFactory()
 	HealthComponent->OnDie.AddUObject(this, &ATankSpawnFactory::Die);
 	HealthComponent->OnDamaged.AddUObject(this, &ATankSpawnFactory::DamageTaked);
 
+	TShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShootEffect"));
+	TShootEffect->SetupAttachment(TankSpawnPoint);
+
+	TAudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioEffect"));
+
+	DShootEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShootEffect2"));
+	DShootEffect->SetupAttachment(BuildingMesh);
+
+	DAudioEffect = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioEffect2"));
 }
 
 void ATankSpawnFactory::TakeDamage(FDamageData DamageData)
@@ -41,6 +50,8 @@ void ATankSpawnFactory::TakeDamage(FDamageData DamageData)
 void ATankSpawnFactory::BeginPlay()
 {
 	Super::BeginPlay();
+	if (LinkedMapLoader)
+		LinkedMapLoader->SetIsActivated(false);
 
 	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this,&ATankSpawnFactory::SpawnNewTank, SpawnTankRate, true, SpawnTankRate);
@@ -50,6 +61,8 @@ void ATankSpawnFactory::BeginPlay()
 
 void ATankSpawnFactory::SpawnNewTank()
 {
+	TShootEffect->ActivateSystem();
+	TAudioEffect->Play();
 	FTransform spawnTransform(TankSpawnPoint->GetComponentRotation(),TankSpawnPoint->GetComponentLocation(), FVector(1));
 	ATankPawn* newTank = GetWorld()->SpawnActorDeferred<ATankPawn>(SpawnTankClass,spawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	//
@@ -60,8 +73,11 @@ void ATankSpawnFactory::SpawnNewTank()
 
 void ATankSpawnFactory::Die()
 {
-	Destroy();
-
+	if (LinkedMapLoader)
+		LinkedMapLoader->SetIsActivated(true);
+	DShootEffect->ActivateSystem();
+	DAudioEffect->Play();
+	GetWorld()->GetTimerManager().SetTimer(DelayDeathHandle, this, &ATankSpawnFactory::Death, 0.4, false);
 }
 
 void ATankSpawnFactory::DamageTaked(float DamageValue)
@@ -69,4 +85,7 @@ void ATankSpawnFactory::DamageTaked(float DamageValue)
 	UE_LOG(LogTemp, Warning, TEXT("Factory %s taked damage:%f Health:%f"),*GetName(), DamageValue, HealthComponent->GetHealth());
 }
 
-
+void ATankSpawnFactory::Death()
+{
+	Destroy();
+}
