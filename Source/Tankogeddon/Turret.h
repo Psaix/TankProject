@@ -45,6 +45,8 @@ public:
 	UFUNCTION()
 		void TakeDamage(FDamageData DamageData);
 
+	virtual void PostInitializeComponents() override;
+
 	UFUNCTION()
 		void Die();
 

@@ -54,13 +54,13 @@ ATurret::ATurret()
 	HitCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Hit collider"));
 	HitCollider->SetupAttachment(TurretMesh);
 
-	UStaticMesh * turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
+	/*UStaticMesh* turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
 	if (turretMeshTemp)
 		TurretMesh->SetStaticMesh(turretMeshTemp);
 
 	UStaticMesh* bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
 	if (bodyMeshTemp)
-		BodyMesh->SetStaticMesh(bodyMeshTemp);
+		BodyMesh->SetStaticMesh(bodyMeshTemp);*/
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Healthcomponent"));
 	HealthComponent->OnDie.AddUObject(this, &ATurret::Die);
@@ -99,7 +99,6 @@ void ATurret::DamageTaked(float DamageValue)
 void ATurret::BeginPlay()
 {
 	Super::BeginPlay();
-
 	FActorSpawnParameters params;
 	params.Owner = this;
 	Cannon = GetWorld()->SpawnActor<ACannon>(CannonClass, params);
@@ -108,6 +107,17 @@ void ATurret::BeginPlay()
 	FTimerHandle _targetingTimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(_targetingTimerHandle, this, &ATurret::Targeting, TargetingRate, true, TargetingRate);
 	
+}
+
+void ATurret::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	UStaticMesh* turretMeshTemp = LoadObject<UStaticMesh>(this, *TurretMeshPath);
+	if (turretMeshTemp)
+		TurretMesh->SetStaticMesh(turretMeshTemp);
+	UStaticMesh* bodyMeshTemp = LoadObject<UStaticMesh>(this, *BodyMeshPath);
+	if (bodyMeshTemp)
+		BodyMesh->SetStaticMesh(bodyMeshTemp);
 }
 
 void ATurret::Destroyed()

@@ -30,37 +30,16 @@ void AProjectile::Start()
 void AProjectile::OnMeshOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	AActor* owner = GetOwner();
-	AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
-	if (OtherActor != owner && OtherActor != ownerByOwner)
+	if (CanExplode)
+		Explode();
+	else
 	{
-		IDamageTaker* damageTakerActor = Cast<IDamageTaker>(OtherActor);
-		if (damageTakerActor)
+		AActor* owner = GetOwner();
+		AActor* ownerByOwner = owner != nullptr ? owner->GetOwner() : nullptr;
+		if (OtherActor != owner && OtherActor != ownerByOwner)
 		{
-			FDamageData damageData;
-			damageData.DamageValue = Damage;
-			damageData.Instigator = owner;
-			damageData.DamageMaker = this;
-			damageTakerActor->TakeDamage(damageData);
+			DamageDealing(OtherActor);
 		}
-		else
-		{
-			UPrimitiveComponent* mesh = Cast<UPrimitiveComponent>(OtherActor->GetRootComponent());
-			if (mesh)
-			{
-				if (mesh->IsSimulatingPhysics())
-				{
-					FVector forceVector = OtherActor->GetActorLocation() - GetActorLocation();
-					forceVector.Normalize();
-					mesh->AddImpulse(forceVector, NAME_None, true);
-				}
-				else
-				{
-					OtherActor->Destroy();
-				}
-			}
-		}
-		Destroy();
 	}
 }
 
@@ -68,7 +47,6 @@ void AProjectile::Move()
 {
 	FVector nextPosition = GetActorLocation() + GetActorForwardVector() * MoveSpeed * MoveRate;
 	SetActorLocation(nextPosition);
-
 }
 
 void AProjectile::Killed()
@@ -78,6 +56,79 @@ void AProjectile::Killed()
 		OnKill.Broadcast();
 	}
 }
+
+void AProjectile::Explode()
+{
+	CanExplode = false;
+	FVector startPos = GetActorLocation();
+	FVector endPos = startPos + FVector(0.1f);
+	FCollisionShape Shape = FCollisionShape::MakeSphere(ExplodeRadius);
+	FCollisionQueryParams params = FCollisionQueryParams::DefaultQueryParam;
+	params.AddIgnoredActor(this);
+	params.bTraceComplex = true;
+	params.TraceTag = "Explode Trace";
+	TArray<FHitResult> AttackHit;
+	FQuat Rotation = FQuat::Identity;
+	bool sweepResult = GetWorld()->SweepMultiByChannel
+	(
+		AttackHit,
+		startPos,
+		endPos,
+		Rotation,
+		ECollisionChannel::ECC_Visibility,
+		Shape,
+		params
+	);
+	GetWorld()->DebugDrawTraceTag = "Explode Trace";
+	if (sweepResult)
+	{
+		for (FHitResult hitResult : AttackHit)
+		{
+			AActor* otherActor = hitResult.GetActor();
+			if (!otherActor)
+				continue;
+			DamageDealing(otherActor);
+		}
+	}
+}
+
+void AProjectile::ReadyToExplode()
+{
+	CanExplode = true;
+}
+
+
+void AProjectile::DamageDealing(AActor* otherActor)
+{
+	IDamageTaker* damageTakerActor = Cast<IDamageTaker>(otherActor);
+	if (damageTakerActor)
+	{
+		FDamageData damageData;
+		damageData.DamageValue = Damage;
+		damageData.Instigator = GetOwner();
+		damageData.DamageMaker = this;
+		damageTakerActor->TakeDamage(damageData);
+	}
+	else
+	{
+		UPrimitiveComponent* mesh = Cast<UPrimitiveComponent>(otherActor->GetRootComponent());
+		if (mesh)
+		{
+			if (mesh->IsSimulatingPhysics())
+			{
+				FVector forceVector = otherActor->GetActorLocation() - GetActorLocation();
+				forceVector.Normalize();
+				mesh->AddForce(forceVector * PushForce * mesh->GetMass());
+			}
+			else
+			{
+				otherActor->Destroy();
+			}
+		}
+	}
+	Destroy();
+}
+
 
 
 

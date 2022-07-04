@@ -65,6 +65,7 @@ void ACannon::Fire()
 		if (projectile)
 		{
 			projectile->OnKill.AddUObject(this, &ACannon::Killed);
+			projectile->ReadyToExplode();
 			projectile->Start();
 			ShootEffect->ActivateSystem();
 			AudioEffect->Play();

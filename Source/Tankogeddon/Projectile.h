@@ -28,14 +28,17 @@ protected:
 		float Damage = 1;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
-		float PushForce = 1000;
+		float PushForce = 100000;
 
 	FTimerHandle MovementTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement|Trajectory")
+		float ExplodeRadius = 50.0f;
 
 public:
 	AProjectile();
 
-	void Start();
+	virtual void Start();
 
 protected:
 	UFUNCTION()
@@ -44,12 +47,22 @@ protected:
 			bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void Move();
+		virtual void Move();
 
 	void Killed();
+
+	UFUNCTION()
+		void DamageDealing(AActor* otherActor);
+
+	bool CanExplode = false;
 
 public:
 
 	FOnDestroyed OnKill;
 
+	UFUNCTION()
+		void Explode();
+
+	UFUNCTION()
+		void ReadyToExplode();
 };
